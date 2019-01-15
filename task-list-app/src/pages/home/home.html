@@ -1,0 +1,19 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title>
+			Tasks List
+		</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<button (click)='promptTask()' ion-button>Insert new task</button>
+
+	<ion-list>
+		<ion-item *ngFor="let task of tasks" (swipe)="removeTask(this.tasks.indexOf(task))">
+			<ion-label>{{ task }}</ion-label>
+			<ion-checkbox (click)="checkTask(this.tasks.indexOf(task))" [id]="'task'+this.tasks.indexOf(task)+'unchecked'"></ion-checkbox>
+			<ion-checkbox (click)="checkTask(this.tasks.indexOf(task))" [id]="'task'+this.tasks.indexOf(task)+'checked'" checked></ion-checkbox>
+		</ion-item>
+	</ion-list>
+</ion-content>
