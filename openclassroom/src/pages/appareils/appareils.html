@@ -1,0 +1,17 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title>Appareils</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<ion-list>
+		<button ion-item *ngFor="let appareil of appareilsList"
+				(click)="onLoadAppareil(appareil)">{{ appareil.name }}</button>
+	</ion-list>
+	<!--<button ion-button block navPop>Retour</button>-->
+</ion-content>
+
+<ion-footer padding>
+	<p>Footer</p>
+</ion-footer>
