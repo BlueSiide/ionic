@@ -16,14 +16,12 @@ export class HomePage {
 	constructor(public navCtrl: NavController, public alertCtrl: AlertController, public storage: Storage) {
 		var doesArrayExists;
 		storage.get('tasks').then((val1) => {
-			console.log(val1);
 			if (val1 != null) {
 				doesArrayExists = true;
 			} else {
 				doesArrayExists = false;
 			}
 				if (doesArrayExists == true) {
-					console.log("done");
 					storage.get('tasks').then((val2) => {
 						this.tasks = val2;
 					});
@@ -63,8 +61,9 @@ export class HomePage {
 						data = data.task;
 						this.tasks.push(data);
 						this.tasksCheck.push(false);
-						document.getElementById('task'+(this.tasks[(this.tasks).length()-1])+'checked').remove();
-
+						setTimeout(() => {
+							document.getElementById('task'+(this.tasks.length-1)+'checked').remove();
+						}, 100);
 						this.storage.set('tasks', this.tasks);
 						this.storage.set('tasksCheck', this.tasksCheck);
 					}
