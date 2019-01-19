@@ -1,18 +1,21 @@
 <ion-header>
-	<ion-navbar>
-		<button menuToggle ion-button>
-			<ion-icon name="menu"></ion-icon>
-		</button>
-		<ion-title>
-			Accueil
-		</ion-title>
+	<ion-navbar hideBackButton>
+		<ion-title float-left  style="margin-top: 10px;">Accueil</ion-title>
+		<button ion-button (click)="onReload()" float-right>Rafraîchir</button>
 	</ion-navbar>
 </ion-header>
 
 <ion-content padding>
-	<ion-card *ngFor="let post of posts" padding>
-		<h1>{{ post.title }}</h1>
-		<p>{{ post.date | date: short }}</p>
-		<h3>{{ post.content }}</h3>
+	Connecté en tant que : {{ username }}
+	<ion-list>
+		<ion-item>
+			<ion-textarea [(ngModel)]="newPostContent" placeholder="Nouvelle publication"></ion-textarea>
+		</ion-item>
+	</ion-list>
+	<button ion-button block (click)="onNewPost()">Poster</button>
+	<ion-card padding *ngFor="let post of posts">
+		<h2>{{ post.postedBy }} :</h2>
+		<h2>{{ post.content }}</h2>
+		<p>{{ post.date | date:'medium' }}</p>
 	</ion-card>
 </ion-content>

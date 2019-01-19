@@ -3,27 +3,30 @@ import { Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { HomePage } from '../pages/home/home';
-import { AccountPage } from '../pages/account/account';
-import { NewPostPage } from '../pages/new-post/new-post';
+import * as firebase from 'firebase';
+
+import { LoginPage } from '../pages/login/login';
 
 @Component({
     templateUrl: 'app.html'
 })
 export class MyApp {
-    rootPage:any = HomePage;
+    rootPage:any = LoginPage;
 
-    constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen, newPostPage: NewPostPage, homePage: HomePage, accountPage: AccountPage) {
+    constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
         platform.ready().then(() => {
-            // Okay, so the platform is ready and our plugins are available.
-            // Here you can do any higher level native things you might need.
+                let config = {
+                    apiKey: "AIzaSyDE1V3qeYj_ZlX8Jth5EMRi70gTXC-U0Bs",
+                    authDomain: "social-network-2f1a3.firebaseapp.com",
+                    databaseURL: "https://social-network-2f1a3.firebaseio.com",
+                    projectId: "social-network-2f1a3",
+                    storageBucket: "social-network-2f1a3.appspot.com",
+                    messagingSenderId: "346785898086"
+                };
+                firebase.initializeApp(config);
             statusBar.styleDefault();
             splashScreen.hide();
         });
     }
 
-    openPage(page) {
-        this.rootPage = page;
-    }
 }
-
