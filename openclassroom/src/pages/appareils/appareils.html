@@ -6,8 +6,13 @@
 
 <ion-content padding>
 	<ion-list>
-		<button ion-item *ngFor="let appareil of appareilsList"
-				(click)="onLoadAppareil(appareil)">{{ appareil.name }}</button>
+		<button ion-item 
+				icon-start
+				*ngFor="let appareil of appareilsList; let i = index"
+				(click)="onLoadAppareil(i)">
+			<ion-icon name='power' [color]="appareil.isOn ? 'secondary' : 'danger'"></ion-icon>
+			{{ appareil.name }}
+		</button>
 	</ion-list>
 	<!--<button ion-button block navPop>Retour</button>-->
 </ion-content>
