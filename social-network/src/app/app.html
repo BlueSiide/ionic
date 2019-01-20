@@ -5,17 +5,25 @@
 		</ion-toolbar>
 	</ion-header>
 	<ion-content>
-		<ion-list>
-			<button ion-item (click)="openPage(HomePage)">
+		<ion-list margin-top>
+			<button ion-item (click)="onOpenPage(1)">
 				Accueil
 			</button>
-			<button ion-item (click)="openPage(AccountPage)">
-				Compte
+			<button ion-item (click)="onOpenPage(2)">
+				Profil
 			</button>
-			<button ion-item (click)="openPage(NewPostPage)">
-				Nouvelle publication
+			<button ion-item (click)="onOpenPage(3)">
+				Nouvelle Publication
+			</button>
+			<button ion-item (click)="onOpenPage(4)">
+				Contact
 			</button>
 		</ion-list>
+		<ion-footer no-padding>
+			<button ion-button full color="danger" (click)="onDisconnect()">
+				<p style="text-align: center; color: white">Déconnexion</p>
+			</button>
+		</ion-footer>
 	</ion-content>
 </ion-menu>
 

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Storage } from '@ionic/storage';
 import { NavController, NavParams, LoadingController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { SignUpPage } from '../signup/signup';
@@ -16,7 +17,7 @@ export class LoginPage {
 	newUser: boolean;
 	users: Object;
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController) {
+	constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, public storage: Storage) {
 	}
 
 	onLogin() {
@@ -26,6 +27,7 @@ export class LoginPage {
 			});
 			loading.present();
 			let connect: boolean;
+			let userId;
 			let usersDatabase = firebase.database().ref().child('users');
 			this.error = "";
 			usersDatabase.once('value').then(
@@ -37,6 +39,7 @@ export class LoginPage {
 							if (this.username.toLowerCase() == this.users[user].username &&
 								this.password == this.users[user].password) {
 								connect = true;
+								userId = this.users[user].userId;
 								break;
 							} else {
 								connect = false;
@@ -45,8 +48,10 @@ export class LoginPage {
 						}
 					}
 					if (connect == true) {
-						loading.dismiss();
-						this.navCtrl.push(HomePage, {username: this.username.toLowerCase()});
+						this.storage.set('userId',userId).then(() => {
+							loading.dismiss();
+							this.navCtrl.push(HomePage, {username: this.username.toLowerCase()});
+						});
 					} else {
 						loading.dismiss();
 						this.error = 'Mauvais nom d\'utilisateur ou mot de passe';

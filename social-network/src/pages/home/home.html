@@ -1,13 +1,12 @@
 <ion-header>
 	<ion-navbar hideBackButton>
-		<ion-title float-left  style="margin-top: 10px;">Accueil</ion-title>
-		<button ion-button color="danger" (click)="onDisconnect()" float-right>Déconnexion</button>
+		<ion-icon float-left name="menu" (click)="onToggleMenu()" style="font-size: 43px; margin: 0; margin-left: 5px; margin-right: 10px;"></ion-icon>
+		<ion-title float-left style="margin-top: 10px;">Accueil</ion-title>
 	</ion-navbar>
 </ion-header>
 
 <ion-content padding>
 	<button ion-button outline block (click)="onRefresh()" float-right>Rafraîchir la page</button>
-		Connecté en tant que : {{ username }}
 	<ion-list>
 		<ion-item>
 			<ion-textarea [(ngModel)]="newPostContent" placeholder="Nouvelle publication"></ion-textarea>

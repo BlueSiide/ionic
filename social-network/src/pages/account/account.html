@@ -1,0 +1,16 @@
+<ion-header>
+	<ion-navbar>
+		<ion-icon float-left name="menu" (click)="onToggleMenu()" style="font-size: 43px; margin: 0; margin-left: 5px; margin-right: 10px;"></ion-icon>
+		<ion-title float-left style="margin-top: 10px;">Profil</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<h1 style="text-align: center">{{ username }}</h1>
+	<h3>Description :</h3>
+	<ion-list>
+		<ion-item>
+			<ion-textarea [(ngModel)]="description" placeholder="Votre description..."></ion-textarea>
+		</ion-item>
+	</ion-list>
+</ion-content>

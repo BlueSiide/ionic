@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, LoadingController, ToastController, AlertController } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
+import { NavController, NavParams, MenuController, LoadingController, ToastController, AlertController } from 'ionic-angular';
 import * as firebase from 'firebase';
 import { UsersPage } from '../users/users';
 
@@ -10,16 +11,50 @@ import { UsersPage } from '../users/users';
 export class HomePage {
 
 	version = '1.0.1';
-	username = this.navParams.get('username');
+	username: string;
 	postedBy: string;
 	content: string;
 	date: Date;
 	newPostContent = '';
-	postsObj: Object;
 	posts = [];
+	postsObj: Object;
+	users = [];
+	usersObj: Object;
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, public loadingCtrl: LoadingController, public toastCtrl: ToastController) {
+	constructor(public navCtrl: NavController,
+				public navParams: NavParams,
+				public menuCtrl: MenuController,
+				public alertCtrl: AlertController,
+				public loadingCtrl: LoadingController,
+				public toastCtrl: ToastController,
+				public storage: Storage) {
+		this.getUser();
 		this.onRefresh();
+	}
+
+	public onToggleMenu() {
+		this.menuCtrl.open();
+	}
+
+	getUser() {
+		let loading = this.loadingCtrl.create({
+			content: 'Chargement...'
+		});
+		loading.present();
+		this.users = [];
+		firebase.database().ref().child('users/').once('value').then(
+			(data) => {
+				this.usersObj = data.val();
+				for (let i = 0; i < Object.keys(this.usersObj).length; i++) {
+					let user = Object.keys(this.usersObj)[i];
+					this.users.push(this.usersObj[user]);
+				}
+				this.storage.get('userId').then((val) => {
+					this.username = this.users[val-1].username;
+					console.log(this.username);
+					loading.dismiss();
+				});
+		});
 	}
 
 	onRefresh() {
@@ -42,6 +77,10 @@ export class HomePage {
 
 	onNewPost() {
 		if (this.newPostContent.length != 0) {
+			let loading = this.loadingCtrl.create({
+				content: 'Publication...'
+			});
+			loading.present();
 			let database = firebase.database();
 			let dateObj = new Date();
 			let postDate = dateObj.getDate()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getFullYear()+' '+dateObj.getHours()+':'+dateObj.getMinutes();
@@ -50,10 +89,11 @@ export class HomePage {
 						{
 							"postRef": postRef,
 							"postedBy": this.username,
-							"content": this.newPostContent,
+							"content": this.newPostContent.replace("\n", "<br>"),
 							"date": postDate
 						}
 					).then(() => {
+						loading.dismiss();
 						this.newPostContent = "";
 						this.onRefresh();
 					});
@@ -92,15 +132,7 @@ export class HomePage {
 		});
 		alert.present();
 	}
-
-	onDisconnect() {
-		let loading = this.loadingCtrl.create({
-			content: 'Déconnexion...'
-		});
-		loading.present();
-		location.reload();
-	}
-
+	
 	onShowUsers() {
 		this.navCtrl.push(UsersPage);
 	}

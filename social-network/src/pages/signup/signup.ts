@@ -16,8 +16,7 @@ export class SignUpPage {
 	error: string;
 	isNew: boolean;
 	users: Object;
-	//usersDatabase = firebase.database().ref().child('users');
-
+	
 	constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController) {
 	}
 

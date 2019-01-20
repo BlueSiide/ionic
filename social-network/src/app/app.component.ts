@@ -1,19 +1,28 @@
-import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { MenuController, NavController, Platform, LoadingController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import * as firebase from 'firebase';
 
+import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
+import { AccountPage } from '../pages/account/account';
+import { NewPostPage } from '../pages/newpost/newpost';
+import { ContactPage } from '../pages/contact/contact';
 
 @Component({
     templateUrl: 'app.html'
 })
 export class MyApp {
     rootPage:any = LoginPage;
+    @ViewChild('content') content: NavController;
 
-    constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+    constructor(platform: Platform,
+                statusBar: StatusBar,
+                splashScreen: SplashScreen,
+                private menuCtrl: MenuController,
+                private loadingCtrl: LoadingController) {
         platform.ready().then(() => {
                 let config = {
                     apiKey: "AIzaSyDE1V3qeYj_ZlX8Jth5EMRi70gTXC-U0Bs",
@@ -28,5 +37,27 @@ export class MyApp {
             splashScreen.hide();
         });
     }
+
+    public onOpenPage(page: any) {
+        if (page == 1) {
+            this.content.setRoot(HomePage);
+        } else if (page == 2) {
+            this.content.setRoot(AccountPage);
+        } else if (page == 3) {
+            this.content.setRoot(NewPostPage);
+        } else if (page == 4) {
+            this.content.setRoot(ContactPage);
+        }
+        this.menuCtrl.close();
+    }
+
+    onDisconnect() {
+        let loading = this.loadingCtrl.create({
+            content: 'Déconnexion...'
+        });
+        loading.present();
+        location.reload();
+    }
+
 
 }
