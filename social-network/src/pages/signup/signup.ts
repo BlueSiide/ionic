@@ -12,6 +12,7 @@ export class SignUpPage {
 	username = "";
 	password = "";
 	confirmPassword = "";
+	email = "";
 	error: string;
 	isNew: boolean;
 	users: Object;
@@ -21,7 +22,7 @@ export class SignUpPage {
 	}
 
 	onSignUp() {
-		if (this.username.length != 0 && this.password.length != 0 && this.confirmPassword.length != 0) {
+		if (this.username.length != 0 && this.password.length != 0 && this.confirmPassword.length != 0 && this.email.length != 0) {
 			if (this.password == this.confirmPassword) {
 				let loading = this.loadingCtrl.create({
 					content: 'Inscription en cours...'
@@ -51,6 +52,7 @@ export class SignUpPage {
 									{
 										"username": this.username.toLowerCase(),
 										"password": this.password,
+										"email": this.email
 									}
 								)
 							loading.dismiss();
