@@ -1,0 +1,26 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title style="margin-top: 10px" float-left>Utilisateurs</ion-title>
+		<button ion-button float-right (click)="loadUsers()">Rafraîchir</button>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<ion-card padding *ngFor="let user of users">
+		<p>
+			<ion-list>
+				<ion-item>
+					<b>Nom d'utilisateur :</b>
+						<br/>
+					{{ user.username }}
+				</ion-item>
+				<ion-item>
+					<b>Email :</b>
+						<br/>
+					{{ user.email }}
+				</ion-item>
+			</ion-list>
+		</p>
+		<button ion-button block color="danger" (click)="onDeleteUser(user.userId)">Supprimer l'utilisateur</button>
+	</ion-card>
+</ion-content>

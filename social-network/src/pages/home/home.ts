@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ModalController, LoadingController, ToastController, AlertController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, ToastController, AlertController } from 'ionic-angular';
 import * as firebase from 'firebase';
+import { UsersPage } from '../users/users';
 
 @Component({
 	selector: 'page-home',
@@ -8,6 +9,7 @@ import * as firebase from 'firebase';
 })
 export class HomePage {
 
+	version = '1.0.1';
 	username = this.navParams.get('username');
 	postedBy: string;
 	content: string;
@@ -16,7 +18,7 @@ export class HomePage {
 	postsObj: Object;
 	posts = [];
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, public modalCtrl: ModalController, public loadingCtrl: LoadingController, public toastCtrl: ToastController) {
+	constructor(public navCtrl: NavController, public navParams: NavParams, public alertCtrl: AlertController, public loadingCtrl: LoadingController, public toastCtrl: ToastController) {
 		this.onRefresh();
 	}
 
@@ -97,5 +99,9 @@ export class HomePage {
 		});
 		loading.present();
 		location.reload();
+	}
+
+	onShowUsers() {
+		this.navCtrl.push(UsersPage);
 	}
 }
