@@ -1,5 +1,7 @@
 {
   "name": "openclassroom",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "ionic-angular"
 }

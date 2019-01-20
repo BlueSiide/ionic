@@ -26,23 +26,22 @@ export class LoginPage {
 			});
 			loading.present();
 			let connect: boolean;
-			let userCount = 0;
 			let usersDatabase = firebase.database().ref().child('users');
 			this.error = "";
 			usersDatabase.once('value').then(
 				(data) => {
 					this.users = data.val();
-					for (var user in this.users) {
-						userCount++;
-					}
-					for (let i = 1; i <= userCount; i++) {
+					for (let i = 1; i <= parseInt((Object.keys(this.users)[Object.keys(this.users).length-1]).replace(/\D/g, "")); i++) {
 						let user = 'user'+i;
-						if (this.username.toLowerCase() == this.users[user].username &&
-							this.password == this.users[user].password) {
-							connect = true;
-							break;
-						} else {
-							connect = false;
+						try {
+							if (this.username.toLowerCase() == this.users[user].username &&
+								this.password == this.users[user].password) {
+								connect = true;
+								break;
+							} else {
+								connect = false;
+							}
+						} catch (err) {
 						}
 					}
 					if (connect == true) {
