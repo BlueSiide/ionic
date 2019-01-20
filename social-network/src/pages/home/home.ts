@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ModalController } from 'ionic-angular';
+import { NavController, NavParams, ModalController, LoadingController, ToastController } from 'ionic-angular';
 import * as firebase from 'firebase';
 
 @Component({
@@ -8,23 +8,17 @@ import * as firebase from 'firebase';
 })
 export class HomePage {
 
-	username: string = this.navParams.get('username');
+	username = this.navParams.get('username');
 	postedBy: string;
 	content: string;
 	date: Date;
 	newPostContent = '';
-	//postsDatabase = firebase.database().ref().child('users');
+	postsObj: Object;
+	posts = [];
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, public modalCtrl: ModalController) {
+	constructor(public navCtrl: NavController, public navParams: NavParams, public modalCtrl: ModalController, public loadingCtrl: LoadingController, public toastCtrl: ToastController) {
+		this.onRefresh();
 	}
-
-	posts = [
-		{
-			postedBy: 'user1',
-			content: 'This social network is pretty awesome dammn.',
-			date: new Date()
-		}
-	]
 
 	Post(username, content, date) {
 		this.postedBy = username;
@@ -32,16 +26,57 @@ export class HomePage {
 		this.date = date;
 	}
 
+	onRefresh() {
+		this.posts = [];
+		let postsCount = 0;
+		firebase.database().ref().child('posts/').once('value').then(
+			(data) => {
+				this.postsObj = data.val();
+				for (var postCnt in this.postsObj) {
+					postsCount++;
+				}
+				for (let i = 1; i <= postsCount; i++) {
+					let post = 'post'+i;
+					this.posts.push(this.postsObj[post]);
+				}
+				this.posts = this.posts.reverse();
+		});
+	}
+
 	onNewPost() {
 		if (this.newPostContent.length != 0) {
-			this.posts.unshift(new this.Post(this.username, this.newPostContent, new Date()));
-			this.newPostContent = '';
+			let database = firebase.database();
+			let postsCount = 0;
+			let dateObj = new Date();
+			let postDate = dateObj.getDate()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getFullYear()+' '+dateObj.getHours()+':'+dateObj.getMinutes();
+					for (var post in this.posts) {
+						postsCount++;
+					}
+					database.ref().child('posts/post'+(postsCount+1)).set(
+						{
+							"postedBy": this.username,
+							"content": this.newPostContent,
+							"date": postDate
+						}
+					).then(() => {
+						this.newPostContent = "";
+						this.onRefresh();
+					});
 		} else {
-			alert('Votre publication est vide.');
+			let toast = this.toastCtrl.create({
+				message: 'Votre publication est vide',
+				position: 'bottom',
+				duration: 3000
+			});
+			toast.present();
 		}
 	}
 
-	onReload() {
-		this.navCtrl.push(HomePage, {username: this.username});
+	onDisconnect() {
+		let loading = this.loadingCtrl.create({
+			content: 'Déconnexion...'
+		});
+		loading.present();
+		location.reload();
 	}
 }
