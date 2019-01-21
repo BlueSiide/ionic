@@ -6,17 +6,11 @@
 </ion-header>
 
 <ion-content padding>
-	<button ion-button outline block (click)="onRefresh()" float-right>Rafraîchir la page</button>
-	<ion-list>
-		<ion-item>
-			<ion-textarea [(ngModel)]="newPostContent" placeholder="Nouvelle publication"></ion-textarea>
-		</ion-item>
-	</ion-list>
-	<button ion-button block (click)="onNewPost()">Poster</button>
+	<button ion-button outline block (click)="onRefresh()" margin-bottom>Rafraîchir la page</button>
 	<ion-card padding *ngFor="let post of posts">
 		<ion-grid no-padding>
 			<ion-row>
-				<ion-col>
+				<ion-col (click)="onVisitProfile(post.postedBy)">
 					<h2 float-left style="margin-top: 0">{{ post.postedBy }} :</h2>
 				</ion-col>
 				<ion-col>

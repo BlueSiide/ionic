@@ -6,5 +6,10 @@
 </ion-header>
 
 <ion-content padding>
-
+	<ion-list>
+		<ion-item>
+			<ion-textarea [(ngModel)]="newPostContent" rows="15"></ion-textarea>
+		</ion-item>
+	</ion-list>
+	<button ion-button float-right (click)="onNewPost()">Publier</button>
 </ion-content>

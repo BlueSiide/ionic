@@ -13,6 +13,7 @@ import { UsersPage } from '../pages/users/users';
 import { AccountPage } from '../pages/account/account';
 import { NewPostPage } from '../pages/newpost/newpost';
 import { ContactPage } from '../pages/contact/contact';
+import { VisitProfilePage } from '../pages/visitprofile/visitprofile';
 
 @NgModule({
     declarations: [
@@ -23,7 +24,8 @@ import { ContactPage } from '../pages/contact/contact';
         UsersPage,
         AccountPage,
         NewPostPage,
-        ContactPage
+        ContactPage,
+        VisitProfilePage
     ],
     imports: [
         BrowserModule,
@@ -39,7 +41,8 @@ import { ContactPage } from '../pages/contact/contact';
         UsersPage,
         AccountPage,
         NewPostPage,
-        ContactPage
+        ContactPage,
+        VisitProfilePage
     ],
     providers: [
         StatusBar,

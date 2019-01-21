@@ -1,0 +1,12 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>Profil</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<h1 style="text-align: center">{{ username }}</h1>
+		<hr>
+	<h3>Description :</h3>
+	<p [ngClass]="{'italic': (description == 'Aucune description.')}" [innerHTML]="description"></p>
+</ion-content>

@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage';
 import { NavController, NavParams, MenuController, LoadingController, ToastController, AlertController } from 'ionic-angular';
 import * as firebase from 'firebase';
 import { UsersPage } from '../users/users';
+import { VisitProfilePage } from '../visitprofile/visitprofile';
 
 @Component({
 	selector: 'page-home',
@@ -10,7 +11,7 @@ import { UsersPage } from '../users/users';
 })
 export class HomePage {
 
-	version = '1.0.1';
+	version = '1.1';
 	username: string;
 	postedBy: string;
 	content: string;
@@ -51,7 +52,6 @@ export class HomePage {
 				}
 				this.storage.get('userId').then((val) => {
 					this.username = this.users[val-1].username;
-					console.log(this.username);
 					loading.dismiss();
 				});
 		});
@@ -73,38 +73,6 @@ export class HomePage {
 				this.posts = this.posts.reverse();
 				loading.dismiss();
 		});
-	}
-
-	onNewPost() {
-		if (this.newPostContent.length != 0) {
-			let loading = this.loadingCtrl.create({
-				content: 'Publication...'
-			});
-			loading.present();
-			let database = firebase.database();
-			let dateObj = new Date();
-			let postDate = dateObj.getDate()+'/'+(dateObj.getMonth()+1)+'/'+dateObj.getFullYear()+' '+dateObj.getHours()+':'+dateObj.getMinutes();
-					let postRef = parseInt((Object.keys(this.postsObj)[Object.keys(this.postsObj).length-1]).replace(/\D/g, ""))+1;
-					database.ref().child('posts/post'+postRef).set(
-						{
-							"postRef": postRef,
-							"postedBy": this.username,
-							"content": this.newPostContent.replace("\n", "<br>"),
-							"date": postDate
-						}
-					).then(() => {
-						loading.dismiss();
-						this.newPostContent = "";
-						this.onRefresh();
-					});
-		} else {
-			let toast = this.toastCtrl.create({
-				message: 'Votre publication est vide',
-				position: 'bottom',
-				duration: 3000
-			});
-			toast.present();
-		}
 	}
 
 	onDelete(postRef) {
@@ -135,5 +103,20 @@ export class HomePage {
 	
 	onShowUsers() {
 		this.navCtrl.push(UsersPage);
+	}
+
+	onVisitProfile(postedBy) {
+		for (let user in this.users) {
+			if (postedBy == this.users[user].username) {
+				let description: string;
+				if (this.users[user].description == undefined) {
+					description = "Aucune description.";
+				} else {
+					description = this.users[user].description;
+				}
+				this.navCtrl.push(VisitProfilePage, {"username": this.users[user].username, "description": description});
+				break;
+			}
+		}
 	}
 }

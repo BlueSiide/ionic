@@ -12,10 +12,13 @@ import * as firebase from 'firebase';
 })
 export class AccountPage {
 
-	description: string;
-	username: string;
 	users = [];
 	usersObj: Object;
+	userId: number;
+	username: string;
+	email: string;
+	password: string;
+	description: string;
 
 	constructor(public navCtrl: NavController,
 				public navParams: NavParams,
@@ -43,11 +46,31 @@ export class AccountPage {
 					this.users.push(this.usersObj[user]);
 				}
 				this.storage.get('userId').then((val) => {
-					this.username = this.users[val-1].username;
-					this.description = this.users[val-1].description;
+					this.userId = val;
+					this.username = this.users[this.userId-1].username;
+					this.description = this.users[this.userId-1].description;
+					this.password = this.users[this.userId-1].password;
+					this.email = this.users[this.userId-1].email;
 					loading.dismiss();
 				});
 		});
 	}
 
+	onUpdateDesc() {
+		let loading = this.loadingCtrl.create({
+			content: 'Mise à jour de la description...'
+		});
+		loading.present();
+		firebase.database().ref().child('users/user'+this.userId).set(
+					{
+							"userId": this.userId,
+							"username": this.username,
+							"password": this.password,
+							"email": this.email,
+							"description": this.description.replace('\n','<br>')
+						}
+					).then(() => {
+						loading.dismiss();
+					});
+	}
 }

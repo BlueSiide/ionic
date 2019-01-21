@@ -7,10 +7,12 @@
 
 <ion-content padding>
 	<h1 style="text-align: center">{{ username }}</h1>
+		<hr>
 	<h3>Description :</h3>
 	<ion-list>
 		<ion-item>
-			<ion-textarea [(ngModel)]="description" placeholder="Votre description..."></ion-textarea>
+			<ion-textarea rows="15" [(ngModel)]="description" placeholder="Votre description..."></ion-textarea>
 		</ion-item>
 	</ion-list>
+	<button ion-button (click)="onUpdateDesc()" float-right>Modifier</button>
 </ion-content>
