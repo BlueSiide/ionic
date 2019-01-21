@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, LoadingController } from 'ionic-angular';
 import { LoginPage } from '../login/login';
+import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 
 @Component({
@@ -15,9 +16,37 @@ export class SignUpPage {
 	email = "";
 	error: string;
 	isNew: boolean;
-	users: Object;
+	usersObj: Object;
+	users = [];
 	
-	constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController) {
+	constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, public storage: Storage) {
+		this.getUsers();
+	}
+
+	getUsers() {
+		let loading = this.loadingCtrl.create({
+			content: 'Chargement ...'
+		});
+		loading.present();
+		this.users = [];
+		firebase.database().ref().child('users/').orderByChild('postRef').once('value').then(
+			(data) => {
+				this.usersObj = data.val();
+				let usersObjKeysStr = Object.keys(this.usersObj);
+				let usersObjKeysNum = [];
+				for (let i = 0; i < usersObjKeysStr.length; i++) {
+					usersObjKeysNum[i] = parseInt(usersObjKeysStr[i].replace( /^\D+/g, ''));
+				}
+				usersObjKeysNum = usersObjKeysNum.sort((a, b) => a - b);
+				for (let i = 0; i < usersObjKeysNum.length; i++) {
+					let user = 'user'+usersObjKeysNum[i];
+					this.users.push(this.usersObj[user]);
+					this.storage.get('userId').then((val) => {
+						this.username = this.users[val-1].username;
+						loading.dismiss();
+					});
+				}
+		});
 	}
 
 	onSignUp() {
@@ -31,37 +60,30 @@ export class SignUpPage {
 					let isNew: boolean;
 					let database = firebase.database();
 					this.error = "";
-					database.ref().child('users/').once('value').then(
-						(data) => {
-							this.users = data.val();
-							for (let i = 1; i <= parseInt((Object.keys(this.users)[Object.keys(this.users).length-1]).replace(/\D/g, "")); i++) {
-								let user = 'user'+i;
-								try {
-									if (this.username.toLowerCase() == this.users[user].username || this.email.toLowerCase() == this.users[user].email) {
-										isNew = false;
-										break;
-									} else {
-										isNew = true;
-									}
-								} catch (err) {	}
-							}
-							if (isNew == true) {
-								let userRef = parseInt((Object.keys(this.users)[Object.keys(this.users).length-1]).replace(/\D/g, ""))+1;
-								database.ref('users/user'+userRef).set(
-										{
-											"username": this.username.toLowerCase().replace(" ", ""),
-											"password": this.password,
-											"email": this.email.toLowerCase().replace(" ", ""),
-											"userId": userRef
-										}
-									)
-								loading.dismiss();
-								this.navCtrl.push(LoginPage);
-							} else {
-								loading.dismiss();
-								this.error = 'Ce nom d\'utilisateur et/ou email existe déjà.';
-							}
-						});
+					for (let user of this.users) {
+						if (user.username == this.username) {
+							isNew = false;
+							break;
+						} else {
+							isNew = true;
+						}
+					}
+					if (isNew == true) {
+						let userRef = (this.users[this.users.length-1].userId)+1;
+						database.ref('users/user'+userRef).set(
+								{
+									"username": this.username.toLowerCase().replace(" ", ""),
+									"password": this.password,
+									"email": this.email.toLowerCase().replace(" ", ""),
+									"userId": userRef
+								}
+							)
+						loading.dismiss();
+						this.navCtrl.push(LoginPage);
+					} else {
+						loading.dismiss();
+						this.error = 'Ce nom d\'utilisateur et/ou email existe déjà.';
+					}
 				} else {
 					this.error = "Vous ne pouvez pas utiliser d'espace dans votre nom d'utilisateur."
 				}

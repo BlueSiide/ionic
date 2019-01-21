@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { NavController, NavParams, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { SignUpPage } from '../signup/signup';
 import * as firebase from 'firebase';
@@ -17,7 +17,7 @@ export class LoginPage {
 	newUser: boolean;
 	users: Object;
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, public storage: Storage) {
+	constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, public storage: Storage, public toastCtrl: ToastController) {
 	}
 
 	onLogin() {
@@ -50,6 +50,12 @@ export class LoginPage {
 					if (connect == true) {
 						this.storage.set('userId',userId).then(() => {
 							loading.dismiss();
+							let toast = this.toastCtrl.create({
+								message: 'Connexion réussie.',
+								position: 'bottom',
+								duration: 2000
+							});
+							toast.present();
 							this.navCtrl.push(HomePage, {username: this.username.toLowerCase()});
 						});
 					} else {

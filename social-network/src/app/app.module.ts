@@ -14,6 +14,7 @@ import { AccountPage } from '../pages/account/account';
 import { NewPostPage } from '../pages/newpost/newpost';
 import { ContactPage } from '../pages/contact/contact';
 import { VisitProfilePage } from '../pages/visitprofile/visitprofile';
+import { ViewPostPage } from '../pages/viewpost/viewpost';
 
 @NgModule({
     declarations: [
@@ -25,7 +26,8 @@ import { VisitProfilePage } from '../pages/visitprofile/visitprofile';
         AccountPage,
         NewPostPage,
         ContactPage,
-        VisitProfilePage
+        VisitProfilePage,
+        ViewPostPage
     ],
     imports: [
         BrowserModule,
@@ -42,7 +44,8 @@ import { VisitProfilePage } from '../pages/visitprofile/visitprofile';
         AccountPage,
         NewPostPage,
         ContactPage,
-        VisitProfilePage
+        VisitProfilePage,
+        ViewPostPage
     ],
     providers: [
         StatusBar,

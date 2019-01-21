@@ -8,8 +8,43 @@
 <ion-content padding>
 	<ion-list>
 		<ion-item>
-			<ion-textarea [(ngModel)]="newPostContent" rows="15"></ion-textarea>
+			<ion-textarea [(ngModel)]="newPostContent" rows="15" placeholder="Votre publication..."></ion-textarea>
 		</ion-item>
 	</ion-list>
 	<button ion-button float-right (click)="onNewPost()">Publier</button>
+		<br>
+	<h4 style="display: inline; margin-top: 0px" float-left>Guide de rédaction</h4>
+
+	<ion-icon style="font-size: 25px; margin-left: 10px; display: inline;"
+			  name="arrow-dropright-circle"
+			  *ngIf="tagsListDisplay == false"
+			  (click)="onToggleTagsList()"></ion-icon>
+
+	<ion-icon style="font-size: 25px; margin-left: 10px; display: inline;"
+			  name="arrow-dropdown-circle"
+			  *ngIf="tagsListDisplay == true"
+			  (click)="onToggleTagsList()"></ion-icon>
+
+	<ion-list *ngIf="tagsListDisplay == true">
+		<p ion-item>La rédaction de la description se fait 
+						<br>
+					en encodage HTML. Il faut donc utiliser
+						<br>
+					les balises suivantes :</p>
+		<p ion-item>- Texte en italique :
+				<br>
+			<b>&lt;i&gt;</b><i>Votre texte en italique</i><b>&lt;i&gt;</b></p>
+		<p ion-item>- Texte en gras :
+				<br>
+			<b>&lt;b&gt;</b><i>Votre texte en gras</i><b>&lt;b&gt;</b></p>
+		<p ion-item>- Texte souligné :
+				<br>
+			<b>&lt;u&gt;</b><i>Votre texte souligné</i><b>&lt;u&gt;</b></p>
+		<p ion-item>- Saut à la ligne :
+				<br>
+			<b>&lt;br&gt;</b></p>
+		<p ion-item>- Lien :
+				<br>
+			<b>&lt;a href="</b><i>Votre lien</i><b>"&gt;</b><i>Titre du lien</i><b>&lt;a&gt;</b></p>
+	</ion-list>
 </ion-content>

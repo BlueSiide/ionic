@@ -4,6 +4,7 @@ import { NavController, NavParams, MenuController, LoadingController, ToastContr
 import * as firebase from 'firebase';
 import { UsersPage } from '../users/users';
 import { VisitProfilePage } from '../visitprofile/visitprofile';
+import { ViewPostPage } from '../viewpost/viewpost';
 
 @Component({
 	selector: 'page-home',
@@ -11,7 +12,7 @@ import { VisitProfilePage } from '../visitprofile/visitprofile';
 })
 export class HomePage {
 
-	version = '1.1';
+	version = '1.2';
 	username: string;
 	postedBy: string;
 	content: string;
@@ -30,7 +31,6 @@ export class HomePage {
 				public toastCtrl: ToastController,
 				public storage: Storage) {
 		this.getUser();
-		this.onRefresh();
 	}
 
 	public onToggleMenu() {
@@ -53,6 +53,7 @@ export class HomePage {
 				this.storage.get('userId').then((val) => {
 					this.username = this.users[val-1].username;
 					loading.dismiss();
+					this.onRefresh();
 				});
 		});
 	}
@@ -63,11 +64,17 @@ export class HomePage {
 		});
 		loading.present();
 		this.posts = [];
-		firebase.database().ref().child('posts/').once('value').then(
+		firebase.database().ref().child('posts/').orderByChild('postRef').once('value').then(
 			(data) => {
 				this.postsObj = data.val();
-				for (let i = 0; i < Object.keys(this.postsObj).length; i++) {
-					let post = Object.keys(this.postsObj)[i];
+				let postsObjKeysStr = Object.keys(this.postsObj);
+				let postsObjKeysNum = [];
+				for (let i = 0; i < postsObjKeysStr.length; i++) {
+					postsObjKeysNum[i] = parseInt(postsObjKeysStr[i].replace( /^\D+/g, ''));
+				}
+				postsObjKeysNum = postsObjKeysNum.sort((a, b) => a - b);
+				for (let i = 0; i < postsObjKeysNum.length; i++) {
+					let post = 'post'+postsObjKeysNum[i];
 					this.posts.push(this.postsObj[post]);
 				}
 				this.posts = this.posts.reverse();
@@ -93,6 +100,12 @@ export class HomePage {
 						firebase.database().ref().child('posts/post'+postRef).remove().then(() => {
 								this.onRefresh();
 								loading.dismiss();
+								let toast = this.toastCtrl.create({
+									message: 'Publication supprimée.',
+									position: 'bottom',
+									duration: 2000
+								});
+								toast.present();
 							});
 					}
 				}
@@ -118,5 +131,9 @@ export class HomePage {
 				break;
 			}
 		}
+	}
+
+	onViewPost(postRef) {
+		this.navCtrl.push(ViewPostPage, {'postRef': postRef, 'username': this.username, 'posts': this.posts});
 	}
 }

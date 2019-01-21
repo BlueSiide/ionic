@@ -1,7 +1,8 @@
 <ion-menu [content]="content" [swipeEnabled]="false">
 	<ion-header>
 		<ion-toolbar>
-			<ion-title>Menu</ion-title>
+			<ion-title float-left style="margin-top: 10px;">Menu</ion-title>
+			<ion-icon float-right name="close" style="font-size: 46px; margin-right: 10px" (click)="onCloseMenu()"></ion-icon>
 		</ion-toolbar>
 	</ion-header>
 	<ion-content>
@@ -13,14 +14,14 @@
 				Profil
 			</button>
 			<button ion-item (click)="onOpenPage(3)">
-				Nouvelle Publication
+				Nouvelle publication
 			</button>
 			<button ion-item (click)="onOpenPage(4)">
 				Contact
 			</button>
 		</ion-list>
 		<ion-footer no-padding>
-			<button ion-button full color="danger" (click)="onDisconnect()">
+			<button no-margin ion-button full color="danger" (click)="onDisconnect()">
 				<p style="text-align: center; color: white">Déconnexion</p>
 			</button>
 		</ion-footer>

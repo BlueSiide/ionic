@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { NavController, NavParams, MenuController, LoadingController } from 'ionic-angular';
+import { NavController, NavParams, MenuController, LoadingController, AlertController, ToastController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { ContactPage } from '../contact/contact';
 import { NewPostPage } from '../newpost/newpost';
@@ -19,12 +19,15 @@ export class AccountPage {
 	email: string;
 	password: string;
 	description: string;
+	tagsListDisplay = false;
 
 	constructor(public navCtrl: NavController,
 				public navParams: NavParams,
 				public menuCtrl: MenuController,
 				public loadingCtrl: LoadingController,
-				public storage: Storage) {
+				public storage: Storage,
+				public alertCtrl: AlertController,
+				public toastCtrl: ToastController) {
 		this.getUsers();
 	}
 
@@ -71,6 +74,45 @@ export class AccountPage {
 						}
 					).then(() => {
 						loading.dismiss();
+						let toast = this.toastCtrl.create({
+							message: 'Description modifiée.',
+							position: 'bottom',
+							duration: 3000
+						});
+						toast.present();
 					});
+	}
+
+	onDeleteAccount(userId) {
+		let alert = this.alertCtrl.create({
+			title: 'Supprimer',
+			message: 'Êtes-vous sûr de supprimer votre compte ?',
+			buttons: [
+				{
+					text: 'Annuler'
+				},
+				{
+					text: 'Confirmer',
+					handler: () => {
+						let loading = this.loadingCtrl.create({
+							content: 'Suppression du compte...'
+						});
+						loading.present();
+						firebase.database().ref().child('users/user'+userId).remove().then(() => {
+								location.reload();
+							});
+					}
+				}
+			]
+		});
+		alert.present();
+	}
+
+	onToggleTagsList() {
+		if (this.tagsListDisplay == true) {
+			this.tagsListDisplay = false;
+		} else {
+			this.tagsListDisplay = true;
+		}
 	}
 }

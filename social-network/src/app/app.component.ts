@@ -59,5 +59,7 @@ export class MyApp {
         location.reload();
     }
 
-
+    onCloseMenu() {
+        this.menuCtrl.close();
+    }
 }

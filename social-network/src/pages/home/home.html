@@ -11,7 +11,9 @@
 		<ion-grid no-padding>
 			<ion-row>
 				<ion-col (click)="onVisitProfile(post.postedBy)">
-					<h2 float-left style="margin-top: 0">{{ post.postedBy }} :</h2>
+					<h2 float-left style="margin-top: 0">
+						<a href="#">{{ post.postedBy }} :</a>
+					</h2>
 				</ion-col>
 				<ion-col>
 					<ion-icon float-right name="trash" color="danger" (click)="onDelete(post.postRef)" *ngIf="this.username == post.postedBy || this.username == 'admin'" style="font-size: 25px"></ion-icon>
@@ -19,7 +21,7 @@
 			</ion-row>
 		</ion-grid>
 			<hr>
-		<h2 [innerHTML]="post.content"></h2>
+		<h2 [innerHTML]="post.content" (click)="onViewPost(post.postRef);"></h2>
 			<hr>
 		<p>{{ post.date }}</p>
 	</ion-card>
