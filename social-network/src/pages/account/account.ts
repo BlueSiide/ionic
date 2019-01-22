@@ -100,12 +100,53 @@ export class AccountPage {
 					text: 'Confirmer',
 					handler: () => {
 						let loading = this.loadingCtrl.create({
-							content: 'Suppression du compte...'
+							content: 'Chargement...'
 						});
 						loading.present();
-						firebase.database().ref().child('users/user'+userId).remove().then(() => {
-								location.reload();
-							});
+						this.users = [];
+						firebase.database().ref().child('users/').once('value').then(
+							(data) => {
+								this.usersObj = data.val();
+								for (let i = 0; i < Object.keys(this.usersObj).length; i++) {
+									let user = Object.keys(this.usersObj)[i];
+									this.users.push(this.usersObj[user]);
+								}
+								this.storage.get('userId').then((val) => {
+									for (let user of this.users) {
+										if (val == user.userId) {
+											this.userId = val;
+											this.username = user.username;
+											this.description = user.description;
+											this.password = user.password;
+											this.email = user.email;
+											break;
+										}
+									}
+									let loading = this.loadingCtrl.create({
+										content: 'Suppression du compte...'
+									});
+									loading.present();
+									for (let i = 0; i < this.users.length; i++) {
+										if (this.users[0].followers[i] == this.username) {
+											this.users[0].followers.splice(i, 1);
+											break;
+										}
+									}
+									firebase.database().ref('users/user1').set(
+										{
+											"username": this.users[0].username,
+											"password": this.users[0].password,
+											"email": this.users[0].email,
+											"userId": this.users[0].userId,
+											"description": this.users[0].description,
+											"followers": this.usersObj['user1']['followers']
+										}).then(() => {
+											firebase.database().ref().child('users/user'+userId).remove().then(() => {
+												location.reload();
+											});
+										});
+								});
+						})
 					}
 				}
 			]

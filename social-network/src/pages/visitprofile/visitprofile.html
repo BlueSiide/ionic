@@ -5,7 +5,16 @@
 </ion-header>
 
 <ion-content padding>
-	<h1 style="text-align: center">{{ username }}</h1>
+	<h1 style="text-align: center">{{ profileUsername }}</h1>
+	<button ion-button outline full
+			*ngIf="isFollowing == false && profileUsername != username && profileUsername != 'admin'"
+			style="text-align: center;"
+			(click)="onFollow()">Suivre</button>
+	<button ion-button outline full
+			*ngIf="isFollowing == true && profileUsername != username && profileUsername != 'admin'"
+			style="text-align: center;"
+			color="danger"
+			(click)="onUnfollow()">Ne plus suivre</button>
 		<hr>
 	<h3>Description :</h3>
 	<p [ngClass]="{'italic': (description == 'Aucune description.')}" [innerHTML]="description"></p>

@@ -12,7 +12,7 @@ import { ViewPostPage } from '../viewpost/viewpost';
 })
 export class HomePage {
 
-	version = '1.2';
+	version = '1.3';
 	serverVersion: string;
 	username: string;
 	postedBy: string;
@@ -31,14 +31,14 @@ export class HomePage {
 				public loadingCtrl: LoadingController,
 				public toastCtrl: ToastController,
 				public storage: Storage) {
-		this.getUser();
+		this.getUsers();
 	}
 
 	public onToggleMenu() {
 		this.menuCtrl.open();
 	}
 
-	getUser() {
+	getUsers() {
 		let loading = this.loadingCtrl.create({
 			content: 'Chargement...'
 		});
@@ -151,13 +151,7 @@ export class HomePage {
 		for (let user in this.users) {
 			if (postedBy == this.users[user].username) {
 				userFound = true;
-				let description: string;
-				if (this.users[user].description == undefined || this.users[user].description == "") {
-					description = "Aucune description.";
-				} else {
-					description = this.users[user].description;
-				}
-				this.navCtrl.push(VisitProfilePage, {"username": this.users[user].username, "description": description});
+				this.navCtrl.push(VisitProfilePage, {"profileUserId": this.users[user].userId, "usersObj": this.usersObj, "users": this.users, "username": this.username});
 				break;
 			}
 		}

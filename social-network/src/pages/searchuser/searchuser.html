@@ -1,0 +1,19 @@
+<ion-header>
+	<ion-navbar>
+		<ion-icon float-left name="menu" (click)="onToggleMenu()" style="font-size: 43px; margin: 0; margin-left: 5px; margin-right: 10px;"></ion-icon>
+		<ion-title float-left style="margin-top: 10px;">Rechercher un utilisateur</ion-title>
+	</ion-navbar>
+		<ion-searchbar [(ngModel)]="userSearched" float-left></ion-searchbar>
+</ion-header>
+
+<ion-content padding>
+	<button ion-button float-right (click)="onSearchUser()">Rechercher</button>
+		<hr style="margin-top: 55px">
+	<p *ngIf="notFound == true" style="font-style: italic; color: gray; text-align: center;">Aucun résultat.</p>
+	<ion-list>
+		<ion-item *ngFor="let user of usersFound" (click)="onVisitProfile(user.username)">
+			<h2>{{ user.username }}</h2>
+			<ion-icon item-right name="arrow-forward"></ion-icon>
+		</ion-item>
+	</ion-list>
+</ion-content>

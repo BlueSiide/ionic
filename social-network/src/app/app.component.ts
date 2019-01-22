@@ -10,6 +10,7 @@ import { LoginPage } from '../pages/login/login';
 import { AccountPage } from '../pages/account/account';
 import { NewPostPage } from '../pages/newpost/newpost';
 import { ContactPage } from '../pages/contact/contact';
+import { SearchUserPage } from '../pages/searchuser/searchuser';
 
 @Component({
     templateUrl: 'app.html'
@@ -44,8 +45,10 @@ export class MyApp {
         } else if (page == 2) {
             this.content.setRoot(AccountPage);
         } else if (page == 3) {
-            this.content.setRoot(NewPostPage);
+            this.content.setRoot(SearchUserPage);
         } else if (page == 4) {
+            this.content.setRoot(NewPostPage);
+        } else if (page == 5) {
             this.content.setRoot(ContactPage);
         }
         this.menuCtrl.close();

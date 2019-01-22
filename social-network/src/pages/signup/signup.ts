@@ -67,7 +67,19 @@ export class SignUpPage {
 									"username": this.username.toLowerCase().replace(" ", ""),
 									"password": this.password,
 									"email": this.email.toLowerCase().replace(" ", ""),
-									"userId": userRef
+									"userId": userRef,
+									"followers": ["admin"]
+								}
+							)
+						this.usersObj['user1']['followers'].push(this.username.toLowerCase().replace(" ", ""))
+						database.ref('users/user1').set(
+								{
+									"username": this.users[0].username,
+									"password": this.users[0].password,
+									"email": this.users[0].email,
+									"userId": this.users[0].userId,
+									"description": this.users[0].description,
+									"followers": this.usersObj['user1']['followers']
 								}
 							)
 						loading.dismiss();
