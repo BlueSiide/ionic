@@ -49,7 +49,12 @@ export class NewPostPage {
 				}
 				this.storage.get('userId').then((val) => {
 					this.userId = val;
-					this.username = this.users[this.userId-1].username;
+					for (let user of this.users) {
+						if (val == user.userId) {
+							this.username = user.username
+							break;
+						}
+					}
 					loading.dismiss();
 				});
 		});

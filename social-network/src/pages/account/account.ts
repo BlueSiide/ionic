@@ -49,11 +49,16 @@ export class AccountPage {
 					this.users.push(this.usersObj[user]);
 				}
 				this.storage.get('userId').then((val) => {
-					this.userId = val;
-					this.username = this.users[this.userId-1].username;
-					this.description = this.users[this.userId-1].description;
-					this.password = this.users[this.userId-1].password;
-					this.email = this.users[this.userId-1].email;
+					for (let user of this.users) {
+						if (val == user.userId) {
+							this.userId = val;
+							this.username = user.username;
+							this.description = user.description;
+							this.password = user.password;
+							this.email = user.email;
+							break;
+						}
+					}
 					loading.dismiss();
 				});
 		});

@@ -13,6 +13,7 @@ import { ViewPostPage } from '../viewpost/viewpost';
 export class HomePage {
 
 	version = '1.2';
+	serverVersion: string;
 	username: string;
 	postedBy: string;
 	content: string;
@@ -51,7 +52,34 @@ export class HomePage {
 					this.users.push(this.usersObj[user]);
 				}
 				this.storage.get('userId').then((val) => {
-					this.username = this.users[val-1].username;
+					for (let user of this.users) {
+						if (val == user.userId) {
+							this.username = user.username
+							break;
+						}
+					}
+					firebase.database().ref().child('version/').once('value').then(
+						(data) => {
+							this.serverVersion = data.val();
+							if (this.serverVersion != this.version) {
+								let alert = this.alertCtrl.create({
+									message: 'Une nouvelle version est disponible ! Rendez vous à l\'url suivante: bit.ly/zireseau pour la télécharger !',
+									title: 'Nouvelle version disponible',
+									buttons: [
+										{
+											text: 'Annuler'
+										},
+										{
+											text: 'Télécharger',
+											handler: () => {
+												window.open('http://bit.ly/zireseau', '_system');
+											}
+										}
+									]
+								});
+								alert.present();
+							}
+						});
 					loading.dismiss();
 					this.onRefresh();
 				});
@@ -119,10 +147,12 @@ export class HomePage {
 	}
 
 	onVisitProfile(postedBy) {
+		let userFound = false;
 		for (let user in this.users) {
 			if (postedBy == this.users[user].username) {
+				userFound = true;
 				let description: string;
-				if (this.users[user].description == undefined) {
+				if (this.users[user].description == undefined || this.users[user].description == "") {
 					description = "Aucune description.";
 				} else {
 					description = this.users[user].description;
@@ -130,6 +160,13 @@ export class HomePage {
 				this.navCtrl.push(VisitProfilePage, {"username": this.users[user].username, "description": description});
 				break;
 			}
+		}
+		if (userFound == false) {
+			let toast = this.toastCtrl.create({
+				duration: 2000,
+				message: 'Cet utilisateur n\'existe plus.'
+			});
+			toast.present();
 		}
 	}
 
