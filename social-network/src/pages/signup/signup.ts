@@ -24,10 +24,6 @@ export class SignUpPage {
 	}
 
 	getUsers() {
-		let loading = this.loadingCtrl.create({
-			content: 'Chargement ...'
-		});
-		loading.present();
 		this.users = [];
 		firebase.database().ref().child('users/').orderByChild('postRef').once('value').then(
 			(data) => {
@@ -41,10 +37,6 @@ export class SignUpPage {
 				for (let i = 0; i < usersObjKeysNum.length; i++) {
 					let user = 'user'+usersObjKeysNum[i];
 					this.users.push(this.usersObj[user]);
-					this.storage.get('userId').then((val) => {
-						this.username = this.users[val-1].username;
-						loading.dismiss();
-					});
 				}
 		});
 	}

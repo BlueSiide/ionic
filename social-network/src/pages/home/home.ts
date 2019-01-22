@@ -60,7 +60,7 @@ export class HomePage {
 
 	onRefresh() {
 		let loading = this.loadingCtrl.create({
-			content: 'Chargement des posts...'
+			content: 'Chargement des publications...'
 		});
 		loading.present();
 		this.posts = [];
@@ -85,7 +85,7 @@ export class HomePage {
 	onDelete(postRef) {
 		let alert = this.alertCtrl.create({
 			title: 'Supprimer',
-			message: 'Êtes-vous sûr de supprimer ce post ?',
+			message: 'Êtes-vous sûr de supprimer cette publication ?',
 			buttons: [
 				{
 					text: 'Annuler'
@@ -94,7 +94,7 @@ export class HomePage {
 					text: 'Confirmer',
 					handler: () => {
 						let loading = this.loadingCtrl.create({
-							content: 'Suppression du post...'
+							content: 'Suppression de la publication...'
 						});
 						loading.present();
 						firebase.database().ref().child('posts/post'+postRef).remove().then(() => {
@@ -134,6 +134,6 @@ export class HomePage {
 	}
 
 	onViewPost(postRef) {
-		this.navCtrl.push(ViewPostPage, {'postRef': postRef, 'username': this.username, 'posts': this.posts});
+		this.navCtrl.push(ViewPostPage, {'postRef': postRef, 'username': this.username, 'posts': this.posts, 'users': this.users});
 	}
 }

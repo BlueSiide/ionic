@@ -15,9 +15,16 @@ export class LoginPage {
 	password = "";
 	error: string;
 	newUser: boolean;
-	users: Object;
+	usersObj: Object;
+	users = [];
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, public storage: Storage, public toastCtrl: ToastController) {
+		this.getUsers();
+		this.storage.get('username').then((val) => {
+			if (val != undefined) {
+				this.username = val;
+			}
+		})
 	}
 
 	onLogin() {
@@ -26,48 +33,65 @@ export class LoginPage {
 				content: 'Connexion...'
 			});
 			loading.present();
+			let userId: number;
 			let connect: boolean;
-			let userId;
-			let usersDatabase = firebase.database().ref().child('users');
 			this.error = "";
-			usersDatabase.once('value').then(
-				(data) => {
-					this.users = data.val();
-					for (let i = 1; i <= parseInt((Object.keys(this.users)[Object.keys(this.users).length-1]).replace(/\D/g, "")); i++) {
-						let user = 'user'+i;
-						try {
-							if (this.username.toLowerCase() == this.users[user].username &&
-								this.password == this.users[user].password) {
-								connect = true;
-								userId = this.users[user].userId;
-								break;
-							} else {
-								connect = false;
-							}
-						} catch (err) {
-						}
-					}
-					if (connect == true) {
-						this.storage.set('userId',userId).then(() => {
-							loading.dismiss();
-							let toast = this.toastCtrl.create({
-								message: 'Connexion réussie.',
-								position: 'bottom',
-								duration: 2000
-							});
-							toast.present();
-							this.navCtrl.push(HomePage, {username: this.username.toLowerCase()});
-						});
-					} else {
-						loading.dismiss();
-						this.error = 'Mauvais nom d\'utilisateur ou mot de passe';
-					}
+			for (let user of this.users) {
+				if (user.username == this.username && user.password == this.password) {
+					connect = true;
+					userId = user.userId;
+					break;
+				} else {
+					connect = false;
+				}
+			}
+			if (connect == true) {
+				this.storage.set('username', this.username);
+				this.storage.set('userId', userId).then(() => {
+					loading.dismiss();
+					let toast = this.toastCtrl.create({
+						message: 'Connexion réussie.',
+						position: 'bottom',
+						duration: 2000
+					});
+					toast.present();
+					this.navCtrl.push(HomePage, {username: this.username.toLowerCase()});
 				});
+			} else {
+				loading.dismiss();
+				this.error = 'Mauvais nom d\'utilisateur ou mot de passe';
+			}
 		} else {
 			this.error = "Veuillez remplir tous les champs."
 		}
-}
+	}
+	
 	onSignUp() {
 		this.navCtrl.push(SignUpPage);
+	}
+
+
+
+	getUsers() {
+		let loading = this.loadingCtrl.create({
+			content: 'Chargement...'
+		});
+		loading.present();
+		this.users = [];
+		firebase.database().ref().child('users/').orderByChild('postRef').once('value').then(
+			(data) => {
+				this.usersObj = data.val();
+				let usersObjKeysStr = Object.keys(this.usersObj);
+				let usersObjKeysNum = [];
+				for (let i = 0; i < usersObjKeysStr.length; i++) {
+					usersObjKeysNum[i] = parseInt(usersObjKeysStr[i].replace( /^\D+/g, ''));
+				}
+				usersObjKeysNum = usersObjKeysNum.sort((a, b) => a - b);
+				for (let i = 0; i < usersObjKeysNum.length; i++) {
+					let user = 'user'+usersObjKeysNum[i];
+					this.users.push(this.usersObj[user]);
+				}
+				loading.dismiss();
+		});
 	}
 }

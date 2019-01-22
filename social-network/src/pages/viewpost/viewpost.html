@@ -14,7 +14,7 @@
 					</h2>
 				</ion-col>
 				<ion-col>
-					<ion-icon float-right name="trash" color="danger" (click)="onDelete(postRef)" *ngIf="this.username == this.postedBy || this.username == 'admin'" style="font-size: 25px"></ion-icon>
+					<ion-icon float-right name="trash" color="danger" (click)="onDeletePost(postRef)" *ngIf="this.username == this.postedBy || this.username == 'admin'" style="font-size: 25px"></ion-icon>
 				</ion-col>
 			</ion-row>
 		</ion-grid>
@@ -29,8 +29,24 @@
 		</ion-item>
 	</ion-list>
 	<button ion-button float-right (click)="onPostAnswer()">Répondre</button>
-	<ion-card *ngFor="let answer of answers">
-
+	<h4 margin-left float-left>Réponses :</h4>
+	<ion-card *ngFor="let answer of answers" padding>
+		<ion-grid no-padding>
+			<ion-row>
+				<ion-col (click)="onVisitProfile(answer.postedBy)">
+					<h2 float-left style="margin-top: 0">
+						<a href="#">{{ answer.postedBy }} :</a>
+					</h2>
+				</ion-col>
+				<ion-col>
+					<ion-icon float-right name="trash" color="danger" (click)="onDeleteAnswer(postRef, answer.ansRef)" *ngIf="this.username == answer.postedBy || this.username == this.postedBy || this.username == 'admin'" style="font-size: 25px"></ion-icon>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+			<hr>
+		<h2 [innerHTML]="answer.content"></h2>
+			<hr>
+		<p>{{ answer.date }}</p>
 	</ion-card>
 	<p style="text-align: center; font-style: italic; margin-top: 100px" *ngIf="this.answersObj == undefined">Aucune réponse</p>
 </ion-content>
