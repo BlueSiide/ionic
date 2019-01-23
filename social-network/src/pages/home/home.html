@@ -6,25 +6,27 @@
 </ion-header>
 
 <ion-content padding>
-	<button ion-button outline block (click)="onRefresh()" margin-bottom>Rafraîchir la page</button>
-	<ion-card padding *ngFor="let post of posts">
-		<ion-grid no-padding>
-			<ion-row>
-				<ion-col (click)="onVisitProfile(post.postedBy)">
-					<h2 float-left style="margin-top: 0">
-						<a href="#">{{ post.postedBy }} :</a>
-					</h2>
-				</ion-col>
-				<ion-col>
-					<ion-icon float-right name="trash" color="danger" (click)="onDelete(post.postRef)" *ngIf="this.username == post.postedBy || this.username == 'admin'" style="font-size: 25px"></ion-icon>
-				</ion-col>
-			</ion-row>
-		</ion-grid>
-			<hr>
-		<h2 [innerHTML]="post.content" (click)="onViewPost(post.postRef);"></h2>
-			<hr>
-		<p>{{ post.date }}</p>
-	</ion-card>
+	<button ion-button outline block (click)="getUsers()" margin-bottom>Rafraîchir la page</button>
+	<div *ngFor="let post of posts" >
+		<ion-card padding *ngIf="followingTest(post.postedBy)">
+			<ion-grid no-padding>
+				<ion-row>
+					<ion-col (click)="onVisitProfile(post.postedBy)">
+						<h2 float-left style="margin-top: 0">
+							<a href="#">{{ post.postedBy }} :</a>
+						</h2>
+					</ion-col>
+					<ion-col>
+						<ion-icon float-right name="trash" color="danger" (click)="onDelete(post.postRef)" *ngIf="this.username == post.postedBy || this.username == 'admin'" style="font-size: 25px"></ion-icon>
+					</ion-col>
+				</ion-row>
+			</ion-grid>
+				<hr>
+			<h2 [innerHTML]="post.content" (click)="onViewPost(post.postRef);"></h2>
+				<hr>
+			<p>{{ post.date }}</p>
+		</ion-card>
+	</div>
 	<button ion-button block (click)="onShowUsers()" *ngIf="username == 'admin'">Afficher les utilisateurs</button>
 	<p style="text-align: center; font-style: italic; color: gray">Version : {{ version }}</p>
 </ion-content>

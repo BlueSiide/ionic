@@ -50,7 +50,7 @@ export class LoginPage {
 						this.users.push(this.usersObj[user]);
 					}
 					for (let user of this.users) {
-						if (user.username == this.username.replace(" ", "") && user.password == this.password) {
+						if (user.username == this.username.replace(" ","").toLowerCase() && user.password == this.password) {
 							connect = true;
 							userId = user.userId;
 							break;

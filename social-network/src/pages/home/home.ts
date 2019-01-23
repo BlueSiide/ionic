@@ -167,4 +167,25 @@ export class HomePage {
 	onViewPost(postRef) {
 		this.navCtrl.push(ViewPostPage, {'postRef': postRef, 'username': this.username, 'posts': this.posts, 'users': this.users});
 	}
+
+	followingTest(postedBy) {
+		if (this.username == postedBy) {
+			return true;
+		}
+		let userKey: number;
+		for (let user of this.users) {
+			if (user.username == postedBy) {
+				userKey = user.userId;
+				break;
+			}
+		}
+		try {
+			for (let follower of this.usersObj['user'+userKey]['followers']) {
+				if (follower == this.username) {
+					return true;
+				}
+			}
+		} catch (err) {} 
+		return false;
+	}
 }

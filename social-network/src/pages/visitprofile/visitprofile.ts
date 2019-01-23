@@ -45,9 +45,9 @@ export class VisitProfilePage {
 				let user = Object.keys(this.usersObj)[i];
 				this.users.push(this.usersObj[user]);
 			}
-			for (let i = 0; i < this.users; i++) {
+			for (let i = 1; i <= this.users[this.users.length-1]['userId']; i++) {
 				try {
-					if (this.usersObj['user'+i].username == this.username) {
+					if (this.usersObj['user'+i]['username'] == this.profileUsername) {
 						//this.users[i].s.splice(i, 1);
 						userKey = i;
 						break;
@@ -55,17 +55,61 @@ export class VisitProfilePage {
 				} catch(err) {}
 			}
 			this.usersObj['user'+userKey]['followers'].push(this.username);
-			firebase.database().ref('users/user1').set(
+			firebase.database().ref('users/user'+userKey).set(
 				{
-					"username": this.usersObj['user'+i].username,
-					"password": this.usersObj['user'+i].password,
-					"email": this.usersObj['user'+i].email,
-					"userId": this.usersObj['user'+i].userId,
-					"description": this.usersObj['user'+i].description,
+					"username": this.usersObj['user'+userKey].username,
+					"password": this.usersObj['user'+userKey].password,
+					"email": this.usersObj['user'+userKey].email,
+					"userId": this.usersObj['user'+userKey].userId,
+					"description": this.usersObj['user'+userKey].description,
 					"followers": this.usersObj['user'+userKey]['followers']
 				}).then(() => {
+					this.isFollowing = true;
 					loading.dismiss();
 				});
 			});
-		}
+	}
+
+	onUnfollow() {
+		let loading = this.loadingCtrl.create({
+			content: 'Chargement...'
+		});
+		loading.present();
+		let userKey;
+		this.users = [];
+		firebase.database().ref().child('users/').once('value').then(
+			(data) => {
+			this.usersObj = data.val();
+			for (let i = 0; i < Object.keys(this.usersObj).length; i++) {
+				let user = Object.keys(this.usersObj)[i];
+				this.users.push(this.usersObj[user]);
+			}
+			for (let i = 1; i <= this.users[this.users.length-1]['userId']; i++) {
+				try {
+					if (this.usersObj['user'+i]['username'] == this.profileUsername) {
+						userKey = i;
+						for (let i = 0; i < this.users.length; i++) {
+							if (this.usersObj['user'+userKey]['followers'][i] == this.username) {
+								this.usersObj['user'+userKey].followers.splice(i, 1);
+								break;
+							}
+						}
+						break;
+					}
+				} catch(err) {}
+			}
+			firebase.database().ref('users/user'+userKey).set(
+				{
+					"username": this.usersObj['user'+userKey].username,
+					"password": this.usersObj['user'+userKey].password,
+					"email": this.usersObj['user'+userKey].email,
+					"userId": this.usersObj['user'+userKey].userId,
+					"description": this.usersObj['user'+userKey].description,
+					"followers": this.usersObj['user'+userKey]['followers']
+				}).then(() => {
+					this.isFollowing = false;
+					loading.dismiss();
+				});
+			});
+	}
 }

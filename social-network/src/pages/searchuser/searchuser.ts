@@ -49,9 +49,10 @@ export class SearchUserPage {
 				content: 'Recherche...'
 			});
 			loading.present();
+			this.userSearched = this.userSearched.toLowerCase().replace(" ","");
 			this.usersFound = [];
 			for (let user of this.users) {
-				if (user.username.includes(this.userSearched.replace(" ",""))) {
+				if (user.username.includes(this.userSearched)) {
 					this.usersFound.push(user);
 				}
 			}

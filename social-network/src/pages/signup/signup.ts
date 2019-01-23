@@ -68,7 +68,8 @@ export class SignUpPage {
 									"password": this.password,
 									"email": this.email.toLowerCase().replace(" ", ""),
 									"userId": userRef,
-									"followers": ["admin"]
+									"followers": ["admin"],
+									"description": ""
 								}
 							)
 						this.usersObj['user1']['followers'].push(this.username.toLowerCase().replace(" ", ""))
