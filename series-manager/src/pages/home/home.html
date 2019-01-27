@@ -1,0 +1,46 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title>
+			Gestionnaire de séries
+		</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<button ion-button block outline (click)="onNewSeries()" color="dark">Nouvelle série</button>
+	<p *ngIf="this.series.length == 0" style="color: gray; text-align: center; font-style: italic">Aucune série enregistrée</p>
+	<ion-list>
+		<ion-card ion-item *ngFor="let serie of series">
+			<ion-card-title>
+				{{ serie.name }}
+				<ion-icon float-right style="color:red" name="trash" (click)="onDeleteSeries(serie.id)"></ion-icon>
+			</ion-card-title>
+			<ion-grid>
+				<ion-row>
+					<ion-col>
+						Saison
+					</ion-col>
+					<ion-col>
+						<div float-right>
+							<ion-icon name="remove" margin-right (click)="onDownSeason(serie.id)"></ion-icon>
+							{{ serie.season }}
+							<ion-icon name="add" margin-left (click)="onUpSeason(serie.id)"></ion-icon>
+						</div>
+					</ion-col>
+				</ion-row>
+				<ion-row>
+					<ion-col>
+						Épisode
+					</ion-col>
+					<ion-col>
+						<div float-right>
+							<ion-icon name="remove" margin-right (click)="onDownEpisode(serie.id)"></ion-icon>
+							{{ serie.episode }}
+							<ion-icon name="add" margin-left (click)="onUpEpisode(serie.id)"></ion-icon>
+						</div>
+					</ion-col>
+				</ion-row>
+			</ion-grid>
+		</ion-card>
+	</ion-list>
+</ion-content>

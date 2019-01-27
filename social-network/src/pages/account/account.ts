@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { NavController, NavParams, MenuController, LoadingController, AlertController, ToastController } from 'ionic-angular';
-import { HomePage } from '../home/home';
-import { ContactPage } from '../contact/contact';
-import { NewPostPage } from '../newpost/newpost';
+import { ViewPostPage } from '../viewpost/viewpost';
+import { VisitProfilePage } from '../visitprofile/visitprofile'; 
 import * as firebase from 'firebase';
 
 @Component({
@@ -20,6 +19,12 @@ export class AccountPage {
 	password: string;
 	description: string;
 	tagsListDisplay = false;
+	followers;
+	posts = [];
+	postsObj: Object;
+	userPosts = [];
+	followerListDisplay = false;
+	subsNbr: number;
 
 	constructor(public navCtrl: NavController,
 				public navParams: NavParams,
@@ -28,14 +33,14 @@ export class AccountPage {
 				public storage: Storage,
 				public alertCtrl: AlertController,
 				public toastCtrl: ToastController) {
-		this.getUsers();
+		this.getUsersAndPosts();
 	}
 
 	public onToggleMenu() {
 		this.menuCtrl.open();
 	}
 
-	getUsers() {
+	getUsersAndPosts() {
 		let loading = this.loadingCtrl.create({
 			content: 'Chargement...'
 		});
@@ -51,6 +56,8 @@ export class AccountPage {
 				this.storage.get('userId').then((val) => {
 					for (let user of this.users) {
 						if (val == user.userId) {
+							this.followers = user.followers;
+							this.subsNbr = user.followers.length;
 							this.userId = val;
 							this.username = user.username;
 							this.description = user.description;
@@ -59,7 +66,28 @@ export class AccountPage {
 							break;
 						}
 					}
-					loading.dismiss();
+					this.posts = [];
+					firebase.database().ref().child('posts/').orderByChild('postRef').once('value').then(
+						(data) => {
+							this.postsObj = data.val();
+							let postsObjKeysStr = Object.keys(this.postsObj);
+							let postsObjKeysNum = [];
+							for (let i = 0; i < postsObjKeysStr.length; i++) {
+								postsObjKeysNum[i] = parseInt(postsObjKeysStr[i].replace( /^\D+/g, ''));
+							}
+							postsObjKeysNum = postsObjKeysNum.sort((a, b) => a - b);
+							for (let i = 0; i < postsObjKeysNum.length; i++) {
+								let post = 'post'+postsObjKeysNum[i];
+								this.posts.push(this.postsObj[post]);
+							}
+							this.posts = this.posts.reverse();
+							for (let post of this.posts) {
+								if (post.postedBy == this.username) {
+									this.userPosts.push(post);
+								}
+							}
+							loading.dismiss();
+					});
 				});
 		});
 	}
@@ -71,6 +99,7 @@ export class AccountPage {
 		loading.present();
 		firebase.database().ref().child('users/user'+this.userId).set(
 					{
+							"followers": this.followers,
 							"userId": this.userId,
 							"username": this.username,
 							"password": this.password,
@@ -159,6 +188,69 @@ export class AccountPage {
 			this.tagsListDisplay = false;
 		} else {
 			this.tagsListDisplay = true;
+		}
+	}
+
+	onViewPost(postRef) {
+		this.navCtrl.push(ViewPostPage, {'postRef': postRef, 'username': this.username, 'posts': this.posts, 'users': this.users, 'usersObj': this.usersObj});
+	}
+
+	onVisitProfile(postedBy) {
+		let userFound = false;
+		for (let user in this.users) {
+			if (postedBy == this.users[user].username) {
+				userFound = true;
+				this.navCtrl.push(VisitProfilePage, {"profileUserId": this.users[user].userId, "usersObj": this.usersObj, "users": this.users, "username": this.username});
+				break;
+			}
+		}
+		if (userFound == false) {
+			let toast = this.toastCtrl.create({
+				duration: 2000,
+				message: 'Cet utilisateur n\'existe plus.'
+			});
+			toast.present();
+		}
+	}
+
+
+	onDelete(postRef) {
+		let alert = this.alertCtrl.create({
+			title: 'Supprimer',
+			message: 'Êtes-vous sûr de supprimer cette publication ?',
+			buttons: [
+				{
+					text: 'Annuler'
+				},
+				{
+					text: 'Confirmer',
+					handler: () => {
+						let loading = this.loadingCtrl.create({
+							content: 'Suppression de la publication...'
+						});
+						loading.present();
+						firebase.database().ref().child('posts/post'+postRef).remove().then(() => {
+								this.getUsersAndPosts();
+								loading.dismiss();
+								let toast = this.toastCtrl.create({
+									message: 'Publication supprimée.',
+									position: 'bottom',
+									duration: 2000
+								});
+								toast.present();
+							});
+					}
+				}
+			]
+		});
+		alert.present();
+	}
+
+	onToggleFollowersList() {
+		if (this.followerListDisplay) {
+			this.followerListDisplay = false;
+		} else {
+			this.followerListDisplay = true;
 		}
 	}
 }

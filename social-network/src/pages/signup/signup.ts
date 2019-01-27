@@ -53,7 +53,8 @@ export class SignUpPage {
 					let database = firebase.database();
 					this.error = "";
 					for (let user of this.users) {
-						if (user.username == this.username) {
+						if (user.username == this.username.toLowerCase().replace(" ", "") ||
+							user.email == this.email.toLowerCase().replace(" ", "")) {
 							isNew = false;
 							break;
 						} else {

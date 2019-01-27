@@ -12,7 +12,7 @@ import { ViewPostPage } from '../viewpost/viewpost';
 })
 export class HomePage {
 
-	version = '1.3';
+	version = '1.4';
 	serverVersion: string;
 	username: string;
 	postedBy: string;
@@ -58,6 +58,7 @@ export class HomePage {
 							break;
 						}
 					}
+					loading.dismiss();
 					firebase.database().ref().child('version/').once('value').then(
 						(data) => {
 							this.serverVersion = data.val();
@@ -80,7 +81,6 @@ export class HomePage {
 								alert.present();
 							}
 						});
-					loading.dismiss();
 					this.onRefresh();
 				});
 		});
@@ -165,7 +165,7 @@ export class HomePage {
 	}
 
 	onViewPost(postRef) {
-		this.navCtrl.push(ViewPostPage, {'postRef': postRef, 'username': this.username, 'posts': this.posts, 'users': this.users});
+		this.navCtrl.push(ViewPostPage, {'postRef': postRef, 'username': this.username, 'posts': this.posts, 'users': this.users, 'usersObj': this.usersObj});
 	}
 
 	followingTest(postedBy) {

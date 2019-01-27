@@ -21,6 +21,7 @@ export class ViewPostPage {
 	posts = this.navParams.get('posts');
 	postsObj: Object;
 	users = this.navParams.get('users');
+	usersObj = this.navParams.get('usersObj');
 
 	constructor(public alertCtrl: AlertController, public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, public toastCtrl: ToastController) {
 		for (let post of this.posts) {
@@ -136,17 +137,20 @@ export class ViewPostPage {
 	}
 
 	onVisitProfile(postedBy) {
+		let userFound = false;
 		for (let user in this.users) {
 			if (postedBy == this.users[user].username) {
-				let description: string;
-				if (this.users[user].description == undefined) {
-					description = "Aucune description.";
-				} else {
-					description = this.users[user].description;
-				}
-				this.navCtrl.push(VisitProfilePage, {"username": this.users[user].username, "description": description});
+				userFound = true;
+				this.navCtrl.push(VisitProfilePage, {"profileUserId": this.users[user].userId, "usersObj": this.usersObj, "users": this.users, "username": this.username});
 				break;
 			}
+		}
+		if (userFound == false) {
+			let toast = this.toastCtrl.create({
+				duration: 2000,
+				message: 'Cet utilisateur n\'existe plus.'
+			});
+			toast.present();
 		}
 	}
 

@@ -89,7 +89,7 @@ export class NewPostPage {
 							{
 								"postRef": postRef,
 								"postedBy": this.username,
-								"content": this.newPostContent,
+								"content": this.newPostContent.replace("<script",""),
 								"date": postDate,
 							}
 						).then(() => {

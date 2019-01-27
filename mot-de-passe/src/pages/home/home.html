@@ -1,0 +1,28 @@
+<ion-header>
+	<ion-navbar>
+		<ion-title>
+			Home
+		</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<h1 text-center *ngIf="this.chrono > 0">Temps restant : {{ chrono }} secondes</h1>
+	<h1 text-center *ngIf="this.chrono <= 0 && this.hasPlayed == true" style="color: red">Partie terminée !</h1>
+	<h1 text-center margin style="font-size: 50px">{{ word }}</h1>
+	<button ion-button block (click)="onStartGame()" *ngIf="this.isPlaying == false">Commencer</button>
+	<ion-grid *ngIf="this.isPlaying == true">
+		<ion-row>
+			<ion-col six>
+				<button ion-button block color="secondary" (click)=onValidateWord()>Mot trouvé</button>
+			</ion-col>
+			<ion-col six>
+				<button ion-button block color="danger" (click)=onRandomWord()>Passer</button>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+	<h1>Score : {{ score }}</h1>
+	<ion-footer no-padding *ngIf="this.isPlaying == false">
+		<button ion-button full no-margin color="dark" (click)="onChangeTime()">Changer la durée d'une partie</button>
+	</ion-footer>
+</ion-content>
