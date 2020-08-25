@@ -26,7 +26,7 @@ export class MyApp {
                 private loadingCtrl: LoadingController) {
         platform.ready().then(() => {
                 let config = {
-                    apiKey: "AIzaSyDE1V3qeYj_ZlX8Jth5EMRi70gTXC-U0Bs",
+                    apiKey: "yeet",
                     authDomain: "social-network-2f1a3.firebaseapp.com",
                     databaseURL: "https://social-network-2f1a3.firebaseio.com",
                     projectId: "social-network-2f1a3",
